@@ -145,61 +145,106 @@ plt.gcf().clear()
 # Remove rows with missing values
 dataset = dataset.dropna()
 
-# Proceed with splitting the data and training the model
-from sklearn.model_selection import train_test_split
+# Import necessary libraries for machine learning and evaluation
+from sklearn.model_selection import train_test_split  # For splitting the dataset into training and testing sets
+from sklearn.linear_model import LinearRegression  # For creating a linear regression model
+from sklearn.metrics import mean_squared_error, r2_score  # For evaluating the model's performance
+
+# Proceed with splitting the data into training and testing sets
+# This is crucial for evaluating the model's performance on unseen data
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
-# Train Machine Learning Models
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error, r2_score
+***Components of the Code
+train_test_split:
 
-# Create and train the Linear Regression model for loan amount prediction
+This function is part of the sklearn.model_selection module in the Scikit-learn library. It is used to split arrays or matrices into random train and test subsets.
+Parameters:
+
+X: Represents the features or independent variables of the dataset. These are the inputs that the model will use to make predictions.
+y: Represents the target variable or dependent variable. This is the output that the model is trying to predict.
+test_size=0.3: Specifies the proportion of the dataset to include in the test split. In this case, 30% of the data will be used for testing, and the remaining 70% will be used for training. This is a common split ratio, but it can be adjusted based on the size of the dataset and the specific requirements of the project.
+random_state=42: This parameter controls the shuffling applied to the data before the split. Setting a random_state ensures that the split is reproducible, meaning that every time you run the code, you will get the same train-test split. The number 42 is arbitrary; any integer can be used.
+Outputs:
+
+X_train: The subset of features used for training the model. It contains 70% of the original feature data.
+X_test: The subset of features used for testing the model. It contains 30% of the original feature data.
+y_train: The subset of target values used for training the model. It corresponds to the features in X_train.
+y_test: The subset of target values used for testing the model. It corresponds to the features in X_test.
+Why Split the Data?
+Training Set: Used to train the model. The model learns the relationship between the features and the target variable from this data.
+Testing Set: Used to evaluate the model's performance. By testing the model on unseen data, we can assess how well it generalizes to new inputs.
+Importance of Reproducibility
+random_state: Ensures that the data split is consistent across different runs. This is important for debugging and comparing model performance, as it eliminates variability due to different train-test splits.
+By splitting the data into training and testing sets, we can build a model that is both accurate and generalizable, avoiding overfitting to the training data. ***
+
+# Initialize the Linear Regression model
+# Linear Regression is used to model the relationship between a dependent variable and multiple independent variables
 model = LinearRegression()
+
+# Train the Linear Regression model using the training data
+# The model learns the relationship between the features (X_train) and the target variable (y_train)
 model.fit(X_train, y_train)
 
-# Make predictions using the trained model
+# Make predictions using the trained model on the test set
+# This step involves using the model to predict loan amounts for the test set features (X_test)
 y_pred = model.predict(X_test)
 
-# Evaluate the model's performance using Mean Squared Error and R² Score
+# Evaluate the model's performance using Mean Squared Error (MSE) and R² Score
+# MSE measures the average squared difference between actual and predicted values; lower MSE indicates better performance
+# R² Score represents the proportion of variance in the dependent variable predictable from the independent variables; closer to 1 indicates a better fit
 mse_amount = mean_squared_error(y_test, y_pred)
 r2_amount = r2_score(y_test, y_pred)
 
+# Print the evaluation metrics to understand the model's accuracy
 print(f'Loan Amount Prediction - Mean Squared Error: {mse_amount}')
 print(f'Loan Amount Prediction - R² Score: {r2_amount}')
 
-# Visualize the actual vs predicted loan amounts
+# Visualize the actual vs predicted loan amounts to assess the model's performance visually
+# A scatter plot is used to compare actual loan amounts (y_test) against predicted loan amounts (y_pred)
 plt.scatter(y_test, y_pred, color='blue')
+
+# Plot a red line representing the ideal fit where predictions perfectly match actual values
 plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], color='red', linewidth=2)
+
+# Label the axes and title the plot for clarity
 plt.xlabel('Actual Loan Amount')
 plt.ylabel('Predicted Loan Amount')
 plt.title('Actual vs Predicted Loan Amount')
 plt.show()
 
-# Display the columns of the dataset
+# Display the columns of the dataset for reference
 dataset.columns
 
-# Train a Decision Tree Regressor model
+# Train a Decision Tree Regressor model (optional, for comparison)
 from sklearn.tree import DecisionTreeRegressor
 
-# Create and train the Decision Tree Regressor model
+# Initialize the Decision Tree Regressor model
+# Decision Tree is a non-linear model that splits data into subsets based on feature values, creating a tree-like structure
 model2 = DecisionTreeRegressor(random_state=42)
+
+# Train the Decision Tree model using the training data
 model2.fit(X_train, y_train)
 
-# Make predictions using the Decision Tree model
+# Make predictions using the Decision Tree model on the test set
 y_pred2 = model2.predict(X_test)
 
 # Visualize the actual vs predicted loan amounts for the Decision Tree model
 plt.scatter(y_test, y_pred2, color='blue', label='Predicted vs Actual')
+
+# Plot a red line representing the ideal fit for the Decision Tree model
 plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], color='red', linewidth=2, label='Ideal Fit')
+
+# Label the axes and title the plot for clarity
 plt.xlabel('Actual Loan Amount')
 plt.ylabel('Predicted Loan Amount')
 plt.title('Actual vs Predicted Loan Amount (Decision Tree Regressor)')
 plt.legend()
 plt.show()
 
-# Evaluate the Decision Tree model's performance
+# Evaluate the Decision Tree model's performance using MSE and R² Score
 mse_amount = mean_squared_error(y_test, y_pred2)
 r2_amount = r2_score(y_test, y_pred2)
 
+# Print the evaluation metrics for the Decision Tree model
 print(f'Loan Amount Prediction - Mean Squared Error: {mse_amount}')
 print(f'Loan Amount Prediction - R² Score: {r2_amount}')
